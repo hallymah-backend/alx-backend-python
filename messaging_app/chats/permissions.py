@@ -1,6 +1,5 @@
-from rest_framework.permissions import Permission
-
-class IsOwner(Permission):
+from rest_framework import BasePermission, permissions
+class IsOwner(BasePermission):
     """
     Allows access only to the owner of the object.
     Used to ensure users can only view their own messages.
