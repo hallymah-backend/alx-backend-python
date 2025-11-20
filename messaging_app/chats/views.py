@@ -5,7 +5,9 @@ from .models import Message, Conversation
 from .serializers import MessageSerializer, ConversationSerializer
 from .permissions import IsOwner, IsParticipantOfConversation
 from rest_framework.response import Response
-
+from .pagination import MessagePagination
+from rest_framework.exceptions import PermissionDenied
+from .filters import MessageFilter
 
 class UserMessagesView(generics.ListAPIView):
     queryset = Message.objects.all()
@@ -66,3 +68,9 @@ class ConversationMessagesView(generics.ListCreateAPIView):
             raise PermissionDenied("Forbidden", code=HTTP_403_FORBIDDEN)
 
         serializer.save(sender=self.request.user, conversation=conversation)
+
+class MessageListView(generics.ListAPIView):
+    queryset = Message.objects.all().order_by('-timestamp')
+    serializer_class = MessageSerializer
+    pagination_class = MessagePagination
+    filterset_class = MessageFilter
